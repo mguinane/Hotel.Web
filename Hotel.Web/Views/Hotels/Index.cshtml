@@ -1,0 +1,73 @@
+﻿@using Hotel.Web.Models
+@model Hotel.Web.ViewModels.AvailabilitySearchViewModel
+
+@{
+    ViewData["Title"] = "Hotels";
+}
+
+<h1>Search results</h1>
+
+<p><strong>@Model.TotalResults hotels found</strong></p>
+
+<div class="container">
+
+    <div class="panel-group">
+
+        <div class="panel panel-default">
+
+            <div class="panel-heading" style="cursor:pointer" data-toggle="collapse" data-target="#filter">
+                <strong>Filter</strong>
+            </div>
+
+            <div id="filter" class="panel-body collapse">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="hotelName" class="control-label col-md-2">Hotel Name:</label>
+                        <input class="form-control col-md-3" id="hotelName" type="text" placeholder="Enter hotel name" maxlength="10" />
+                    </div>
+                    <div class="form-group">
+                        <label for="stars" class="control-label col-md-2">Stars:</label>
+                        <label for="stars-5" class="checkbox-inline"><input type="checkbox" name="stars" id="stars-5" value="5">5</label>
+                        <label for="stars-4" class="checkbox-inline"><input type="checkbox" name="stars" id="stars-4" value="4">4</label>
+                        <label for="stars-3" class="checkbox-inline"><input type="checkbox" name="stars" id="stars-3" value="3">3</label>
+                        <label for="stars-2" class="checkbox-inline"><input type="checkbox" name="stars" id="stars-2" value="2">2</label>
+                        <label for="stars-1" class="checkbox-inline"><input type="checkbox" name="stars" id="stars-1" value="1">1</label>
+                        <label for="stars-0" class="checkbox-inline"><input type="checkbox" name="stars" id="stars-0" value="0">None</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="minRating" class="control-label col-md-2">User Rating (Min-Max):</label>
+                        <div class="col-md-1">
+                            <input class="form-control" name="minRating" id="minRating" type="text" placeholder="0" maxlength="2" />
+                        </div>
+                        <div class="col-md-1">
+                            <input class="form-control" name="maxRating" id="maxRating" type="text" placeholder="10" maxlength="2" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="minCost" class="control-label col-md-2">Minimum Cost:</label>
+                        <input class="form-control col-md-3" name="minCost" id="minCost" type="text" placeholder="Enter minimum cost" maxlength="4" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    <div class="row">
+                        <label for="sortType" class="control-label col-md-2">Sort By:</label>
+                        <select name="sortType" id="sortType" class="form-control col-md-3" asp-items="Html.GetEnumSelectList<SortType>()"></select>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div id="hotelResults">
+    @Html.Partial("HotelResults", Model)
+</div>

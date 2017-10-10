@@ -1,0 +1,14 @@
+{
+  "name": "blockui",
+  "homepage": "https://github.com/malsup/blockui",
+  "_release": "v2.65",
+  "_resolution": {
+    "type": "tag",
+    "tag": "v2.65",
+    "commit": "761d965dd43f2a190d91418a09fc03e7db0d5a66"
+  },
+  "_source": "https://github.com/malsup/blockui.git",
+  "_target": "v2.65",
+  "_originalSource": "blockui",
+  "_direct": true
+}

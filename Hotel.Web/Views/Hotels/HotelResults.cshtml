@@ -1,0 +1,61 @@
+﻿@using Hotel.Web.ViewModels
+@model Hotel.Web.ViewModels.AvailabilitySearchViewModel
+
+<div class="container">
+
+    <div class="panel-group">
+
+        @foreach (var hotel in Model.Establishments)
+        {
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="hidden-xs hidden-sm col-md-1">
+                        <img src="@hotel.ThumbnailUrl" alt="" title="" />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <p><strong>@Html.DisplayFor(h => hotel.Name)</strong></p>
+                            <p><strong>@Html.DisplayFor(h => hotel.Location)</strong></p>
+                            <p>
+                                <strong>
+                                    @Html.DisplayFor(h => hotel.Stars)&nbsp;Stars
+                                </strong>
+                                &nbsp;|&nbsp;
+                                @if (hotel.UserRating > 0)
+                                {
+                                    <strong>
+                                        @Html.DisplayFor(h => hotel.UserRating)&nbsp;
+                                        @Html.DisplayFor(h => hotel.UserRatingTitle)
+                                    </strong>
+                                    @if (hotel.UserRatingCount > 0)
+                                    {
+                                        <small>&nbsp;(@Html.DisplayFor(h => hotel.UserRatingCount)&nbsp;reviews)</small>
+                                    }
+                                    }
+                                    else
+                                    {
+                                    <text>Unrated</text>
+                                }
+                            </p>
+                        </div>
+                        <div class="col-md-2">
+                            <p><strong>@Html.DisplayFor(h => hotel.MinCost)</strong></p>
+                            <p>@Html.DisplayFor(h => hotel.Distance)&nbsp;km</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var prevPageIndex = Model.PageIndex - 1;
+    var nextPageIndex = Model.PageIndex + 1;
+}
+
+<button type="button" name="previousPage" id="previousPage" class="btn btn-default @prevDisabled" onclick="SortFilterPageResults(@prevPageIndex)">Previous</button>
+<button type="button" name="nextPage" id="nextPage" class="btn btn-default @nextDisabled" onclick="SortFilterPageResults(@nextPageIndex)">Next</button>

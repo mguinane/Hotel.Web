@@ -6,6 +6,7 @@
     "jquery": "2.2.0",
     "jquery-validation": "1.14.0",
     "jquery-validation-unobtrusive": "3.2.6",
-    "blockui": "v2.65"
+    "blockui": "v2.65",
+    "angular": "1.6.6"
   }
 }

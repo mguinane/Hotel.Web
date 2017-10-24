@@ -3,60 +3,61 @@
     $(document).ajaxStop($.unblockUI); 
 
     $('#sortType').on('change', function () {
-        SortFilterPageResults(1);
+        sortFilterPageResults(1);
     });
 
     $('#hotelName').on('input', function () {
-        SortFilterPageResults(1);
+        sortFilterPageResults(1);
     });
 
-    $(":checkbox").on('change', function () {
-        SortFilterPageResults(1);
+    $(':checkbox').on('change', function () {
+        sortFilterPageResults(1);
     });
 
     $('#minRating').on('input', function () {
         // trigger search only if number value entered or removed
-        var minRating = $('#minRating').val();
-        if ($.isNumeric(minRating) || minRating === "") {
-            SortFilterPageResults(1);
+        const minRating = $('#minRating').val();
+        if ($.isNumeric(minRating) || minRating === '') {
+            sortFilterPageResults(1);
         }
     });
 
     $('#maxRating').on('input', function () {
         // trigger search only if number value entered or removed
-        var maxRating = $('#maxRating').val();
-        if ($.isNumeric(maxRating) || maxRating === "") {
-            SortFilterPageResults(1);
+        const maxRating = $('#maxRating').val();
+        if ($.isNumeric(maxRating) || maxRating === '') {
+            sortFilterPageResults(1);
         }
     });
 
     $('#minCost').on('input', function () {
         // trigger search only if 2 digit number value entered or removed
-        var minCost = $('#minCost').val();
-        if ((minCost.length >= 2 && $.isNumeric(minCost)) || minCost === "") {
-            SortFilterPageResults(1);
+        const minCost = $('#minCost').val();
+        if ((minCost.length >= 2 && $.isNumeric(minCost)) || minCost === '') {
+            sortFilterPageResults(1);
         }
     });
 
 });
 
-function SortFilterPageResults(page) {
+const sortFilterPageResults = page => {
 
     $.blockUI({ message: null });
 
-    var hotelName = $('#hotelName').val();
-    var sortType = GetNumericValue($('#sortType').val());
-    var minRating = GetNumericValue($('#minRating').val());
-    var maxRating = GetNumericValue($('#maxRating').val());
-    var minCost = GetNumericValue($('#minCost').val());
+    const hotelName = $('#hotelName').val();
+    const sortType = getNumericValue($('#sortType').val());
+    const minRating = getNumericValue($('#minRating').val());
+    const maxRating = getNumericValue($('#maxRating').val());
+    const minCost = getNumericValue($('#minCost').val());
 
     var stars = [];
-    $("input:checkbox[name=stars]:checked").each(function () {
-        var selectedStar = GetNumericValue($(this).val());
+
+    $('input:checkbox[name=stars]:checked').each(function() {
+        const selectedStar = getNumericValue($(this).val());
         stars.push(selectedStar);
     });
 
-    var criteria = {
+    const criteria = {
         pageIndex: page,
         sortType: sortType,
         name: hotelName,
@@ -66,23 +67,35 @@ function SortFilterPageResults(page) {
         minCost: minCost
     };
 
-    $.ajax({
-        type: 'POST',
-        url: '/Hotels/Results',
-        data: JSON.stringify(criteria),
-        dataType: 'html',
-        contentType: 'application/json; charset=utf-8',
-        success: function (result) {
-            $('div#hotelResults').html(result);
+    fetch('/Hotels/Results', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json'
         },
-        error: function (result) {
-            $.unblockUI();
-            $('div#hotelResults').html("Search failed.");
+        body: JSON.stringify(criteria)
+    }).then(response => {
+        if (response.ok) {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('text/html')) {
+                return response.text();
+            }
         }
+        refreshPage('Search failed.');
+        throw new Error('Search failed.');
+    }, networkError => console.log(networkError.message)
+    ).then(textResponse => {
+        refreshPage(textResponse);
+    }).catch(error => {
+        console.log(error.message);
     });
+};
+
+const refreshPage = content => {
+    $.unblockUI();
+    $('div#hotelResults').html(content);
 }
 
-function GetNumericValue(input) {
+const getNumericValue = input => {
     if ($.isNumeric(input)) {
         return Number(input);
     } else {

@@ -10,10 +10,10 @@ namespace Hotel.Web.Controllers
 {
     public class HotelsController : Controller
     {
-        private IHotelRepository _repository;
-        private ILogger<HotelsController> _logger;
+        private readonly IHotelRepository _repository;
+        private readonly ILogger<HotelsController> _logger;
 
-        private int _pageSize = Int32.Parse(Startup.Configuration["pageSettings:pageSize"]);
+        private readonly int _pageSize = int.Parse(Startup.Configuration["pageSettings:pageSize"]);
 
         public HotelsController(IHotelRepository repository, ILogger<HotelsController> logger)
         {
@@ -33,7 +33,7 @@ namespace Hotel.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Failed to get Hotel search results: {ex.ToString()}");
+                _logger.LogError($"Failed to get Hotel search results: {ex}");
             }
 
             return RedirectToAction("Error", "Home");

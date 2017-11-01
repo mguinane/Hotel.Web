@@ -9,7 +9,7 @@ namespace Hotel.Web.Data
 {
     public class HotelRepository : IHotelRepository
     {
-        private AvailabilitySearch _searchResults;
+        private readonly AvailabilitySearch _searchResults;
 
         public HotelRepository()
         {
@@ -18,20 +18,17 @@ namespace Hotel.Web.Data
 
         public AvailabilitySearch GetHotels(SearchResultsCriteria criteria, int pageSize)
         {
-            IEnumerable<Establishment> establishments = _searchResults.Establishments;
-
-            int totalResults = establishments.Count();
+            var establishments = _searchResults.Establishments;
+            var totalResults = _searchResults.Establishments.Count();
 
             // Filter results
-            Func<Establishment, bool> filter = (e => 
-                (String.IsNullOrWhiteSpace(criteria.Name) || e.Name.ToLower().Contains(criteria.Name.ToLower())) &&
-                ((criteria.Stars == null || criteria.Stars.Length == 0) || criteria.Stars.Contains(e.Stars)) &&
-                (criteria.MinUserRating == 0 || e.UserRating >= criteria.MinUserRating) &&
-                (criteria.MaxUserRating == 0 || e.UserRating <= criteria.MinUserRating) &&
-                (criteria.MinCost == 0 || e.MinCost >= criteria.MinCost)
-            );
+            bool Filter(Establishment e) => 
+                (string.IsNullOrWhiteSpace(criteria.Name) || e.Name.ToLower().Contains(criteria.Name.ToLower())) && 
+                ((criteria.Stars == null || criteria.Stars.Length == 0) || criteria.Stars.Contains(e.Stars)) && 
+                (criteria.MinUserRating == 0 || e.UserRating >= criteria.MinUserRating) && (criteria.MaxUserRating == 0 || e.UserRating <= criteria.MinUserRating) && 
+                (criteria.MinCost == 0 || e.MinCost >= criteria.MinCost);
 
-            establishments = establishments.Where(filter);
+            establishments = establishments.Where(Filter);
 
             // Sort results
             switch ((SortType)criteria.SortType)
@@ -52,12 +49,14 @@ namespace Hotel.Web.Data
             }
 
             // Page results
+            var establishmentList = establishments as IList<Establishment> ?? establishments.ToList();
+
             var availability = new AvailabilitySearch()
             {
                 AvailabilitySearchId = _searchResults.AvailabilitySearchId,
-                Establishments = establishments.Skip((criteria.PageIndex - 1) * pageSize).Take(pageSize),
+                Establishments = establishmentList.Skip((criteria.PageIndex - 1) * pageSize).Take(pageSize),
                 PageIndex = criteria.PageIndex,
-                PageCount = (int)Math.Ceiling(establishments.Count() / (double)pageSize),
+                PageCount = (int)Math.Ceiling(establishmentList.Count() / (double)pageSize),
                 TotalResults = totalResults
             };
 

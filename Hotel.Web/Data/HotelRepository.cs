@@ -1,4 +1,5 @@
 ﻿using Hotel.Web.Models;
+using Hotel.Web.Models.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,35 +19,10 @@ namespace Hotel.Web.Data
 
         public AvailabilitySearch GetHotels(SearchResultsCriteria criteria, int pageSize)
         {
-            var establishments = _searchResults.Establishments;
             var totalResults = _searchResults.Establishments.Count();
 
-            // Filter results
-            bool Filter(Establishment e) => 
-                (string.IsNullOrWhiteSpace(criteria.Name) || e.Name.ToLower().Contains(criteria.Name.ToLower())) && 
-                ((criteria.Stars == null || criteria.Stars.Length == 0) || criteria.Stars.Contains(e.Stars)) && 
-                (criteria.MinUserRating == 0 || e.UserRating >= criteria.MinUserRating) && (criteria.MaxUserRating == 0 || e.UserRating <= criteria.MinUserRating) && 
-                (criteria.MinCost == 0 || e.MinCost >= criteria.MinCost);
-
-            establishments = establishments.Where(Filter);
-
-            // Sort results
-            switch ((SortType)criteria.SortType)
-            {
-                case SortType.Stars:
-                    establishments = establishments.OrderByDescending(e => e.Stars);
-                    break;
-                case SortType.MinCost:
-                    establishments = establishments.OrderBy(e => e.MinCost);
-                    break;
-                case SortType.UserRating:
-                    establishments = establishments.OrderByDescending(e => e.UserRating)
-                        .ThenByDescending(e => e.UserRatingCount);
-                    break;
-                default:
-                    establishments = establishments.OrderBy(e => e.Distance);
-                    break;
-            }
+            // Filter & Sort results
+            var establishments = _searchResults.Establishments.Filter(criteria).Sort((SortType)criteria.SortType);
 
             // Page results
             var establishmentList = establishments as IList<Establishment> ?? establishments.ToList();
@@ -62,5 +38,5 @@ namespace Hotel.Web.Data
 
             return availability;
         }
-    }
+    }   
 }

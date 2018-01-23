@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Hotel.Web.Models.Extensions
+namespace Hotel.Web.Core.Models.Extensions
 {
     public static class EstablishmentExtensions
     {
-        public static IEnumerable<Establishment> Filter(this IEnumerable<Establishment> source, SearchResultsCriteria criteria)
+        public static IEnumerable<Establishment> Filter(this IEnumerable<Establishment> source, SearchCriteria criteria)
         {
             return source.Where(e =>
                 (string.IsNullOrWhiteSpace(criteria.Name) || e.Name.ToLower().Contains(criteria.Name.ToLower())) &&

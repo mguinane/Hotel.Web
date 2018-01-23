@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Hotel.Web.Data;
-using Hotel.Web.Models;
+using Hotel.Web.Core.Models;
+using Hotel.Web.Core.Repositories;
 using Hotel.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -25,7 +25,7 @@ namespace Hotel.Web.Controllers
         {
             try
             {
-                var availability = _repository.GetHotels(new SearchResultsCriteria() { PageIndex = 1, SortType = (int)SortType.Distance }, _pageSize);
+                var availability = _repository.GetHotels(new SearchCriteria(), _pageSize);
 
                 var results = Mapper.Map<AvailabilitySearchViewModel>(availability);
 
@@ -40,11 +40,11 @@ namespace Hotel.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Results([FromBody]SearchResultsCriteria criteria)
+        public IActionResult Results([FromBody]SearchCriteriaViewModel criteria)
         {
             if (ModelState.IsValid)
             {
-                var availability = _repository.GetHotels(criteria, _pageSize);
+                var availability = _repository.GetHotels(Mapper.Map<SearchCriteria>(criteria), _pageSize);
 
                 var results = Mapper.Map<AvailabilitySearchViewModel>(availability);
 

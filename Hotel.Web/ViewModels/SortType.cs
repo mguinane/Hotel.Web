@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Hotel.Web.Models
+namespace Hotel.Web.ViewModels
 {
     public enum SortType
     {

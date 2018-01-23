@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Hotel.Web.Models
+namespace Hotel.Web.Core.Models
 {
     // Class created using Edit -> Paste JSON As Classes (Web Essentials extension)
 

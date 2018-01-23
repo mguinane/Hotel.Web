@@ -67,7 +67,7 @@ const sortFilterPageResults = page => {
         minCost: minCost
     };
 
-    fetch('/Hotels/Results', {
+    fetch('Hotels/Results', {
         method: 'POST',
         headers: {
             'content-type': 'application/json'

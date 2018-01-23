@@ -14,7 +14,6 @@ namespace Hotel.Web.ViewModels
         public float UserRating { get; set; }
         public string UserRatingTitle { get; set; }
         public int UserRatingCount { get; set; }
-        public string ImageUrl { get; set; }
         public string ThumbnailUrl { get; set; }
     }
 }

@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using AutoMapper;
+using Hotel.Web.Core.Models;
+using Hotel.Web.Core.Repositories;
+using Hotel.Web.Infrastructure.Repositories;
+using Hotel.Web.ViewModels;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Hotel.Web.Data;
-using AutoMapper;
-using Hotel.Web.ViewModels;
-using Hotel.Web.Models;
 using Newtonsoft.Json.Serialization;
 
 namespace Hotel.Web
@@ -35,6 +36,7 @@ namespace Hotel.Web
 
             Mapper.Initialize(mapConfig =>
             {
+                mapConfig.CreateMap<SearchCriteriaViewModel, SearchCriteria>();
                 mapConfig.CreateMap<Establishment, EstablishmentViewModel>();
                 mapConfig.CreateMap<AvailabilitySearch, AvailabilitySearchViewModel>();
             });

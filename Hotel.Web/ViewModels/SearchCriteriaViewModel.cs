@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Hotel.Web.Filters;
+﻿using Hotel.Web.Filters;
 
-namespace Hotel.Web.Models
+using System.ComponentModel.DataAnnotations;
+
+namespace Hotel.Web.ViewModels
 {
-    public class SearchResultsCriteria
+    public class SearchCriteriaViewModel
     {
         public int PageIndex { get; set; }
 

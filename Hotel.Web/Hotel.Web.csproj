@@ -19,5 +19,9 @@
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.1" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hotel.Web.Core\Hotel.Web.Core.csproj" />
+    <ProjectReference Include="..\Hotel.Web.Infrastructure\Hotel.Web.Infrastructure.csproj" />
+  </ItemGroup>
 
 </Project>

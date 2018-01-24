@@ -5,9 +5,15 @@ VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hotel.Web", "Hotel.Web\Hotel.Web.csproj", "{5BF83F4B-3681-4BFA-AE9F-526852F10678}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hotel.Web.Core", "Hotel.Web.Core\Hotel.Web.Core.csproj", "{9B245DC6-D175-4E08-91D0-1AF2871686A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hotel.Web.Core", "Hotel.Web.Core\Hotel.Web.Core.csproj", "{9B245DC6-D175-4E08-91D0-1AF2871686A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hotel.Web.Infrastructure", "Hotel.Web.Infrastructure\Hotel.Web.Infrastructure.csproj", "{EB8B8274-030E-440E-AC36-4F7AB3E2E4C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hotel.Web.Infrastructure", "Hotel.Web.Infrastructure\Hotel.Web.Infrastructure.csproj", "{EB8B8274-030E-440E-AC36-4F7AB3E2E4C6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E4DAE455-6F60-4EA7-9B70-3A9A6FE419B4}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

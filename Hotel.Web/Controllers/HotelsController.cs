@@ -4,6 +4,7 @@ using Hotel.Web.Core.Repositories;
 using Hotel.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 
 namespace Hotel.Web.Controllers
@@ -12,20 +13,20 @@ namespace Hotel.Web.Controllers
     {
         private readonly IHotelRepository _repository;
         private readonly ILogger<HotelsController> _logger;
+        private readonly PageSettings _pageSettings;
 
-        private readonly int _pageSize = int.Parse(Startup.Configuration["pageSettings:pageSize"]);
-
-        public HotelsController(IHotelRepository repository, ILogger<HotelsController> logger)
+        public HotelsController(IHotelRepository repository, ILogger<HotelsController> logger, IOptions<PageSettings> pageSettings)
         {
             _repository = repository;
             _logger = logger;
+            _pageSettings = pageSettings.Value;
         }
 
         public IActionResult Index()
         {
             try
             {
-                var availability = _repository.GetHotels(new SearchCriteria(), _pageSize);
+                var availability = _repository.GetHotels(new SearchCriteria(), _pageSettings.PageSize);
 
                 var results = Mapper.Map<AvailabilitySearchViewModel>(availability);
 
@@ -44,7 +45,7 @@ namespace Hotel.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var availability = _repository.GetHotels(Mapper.Map<SearchCriteria>(criteria), _pageSize);
+                var availability = _repository.GetHotels(Mapper.Map<SearchCriteria>(criteria), _pageSettings.PageSize);
 
                 var results = Mapper.Map<AvailabilitySearchViewModel>(availability);
 

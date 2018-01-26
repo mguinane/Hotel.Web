@@ -2,13 +2,13 @@
 {
     public class SearchCriteria
     {
-        public int PageIndex { get; private set; }
-        public SortType SortType { get; private set; }
-        public string Name { get; private set; }
-        public int[] Stars { get; private set; }
-        public int MinUserRating { get; private set; }
-        public int MaxUserRating { get; private set; }
-        public int MinCost { get; private set; }
+        public int PageIndex { get; set; }
+        public SortType SortType { get; set; }
+        public string Name { get; set; }
+        public int[] Stars { get; set; }
+        public int MinUserRating { get; set; }
+        public int MaxUserRating { get; set; }
+        public int MinCost { get; set; }
 
         public SearchCriteria()
         {

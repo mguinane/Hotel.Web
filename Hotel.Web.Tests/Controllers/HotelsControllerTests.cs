@@ -54,7 +54,7 @@ namespace Hotel.Web.Tests.Controllers
 
             // Assert
             var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-            var viewModel = viewResult.Model.Should().BeOfType<AvailabilitySearchViewModel>().Subject;
+            viewResult.Model.Should().BeOfType<AvailabilitySearchViewModel>();
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace Hotel.Web.Tests.Controllers
 
             // Assert
             var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-            var viewModel = viewResult.Model.Should().BeOfType<AvailabilitySearchViewModel>().Subject;
+            viewResult.Model.Should().BeOfType<AvailabilitySearchViewModel>();
         }
 
         [Fact]
@@ -86,7 +86,7 @@ namespace Hotel.Web.Tests.Controllers
 
             // Assert
             var partialViewResult = result.Should().BeOfType<PartialViewResult>().Subject;
-            var viewModel = partialViewResult.Model.Should().BeOfType<AvailabilitySearchViewModel>().Subject;
+            partialViewResult.Model.Should().BeOfType<AvailabilitySearchViewModel>();
         }
 
         [Fact]
@@ -102,7 +102,7 @@ namespace Hotel.Web.Tests.Controllers
 
             // Assert
             var partialViewResult = result.Should().BeOfType<PartialViewResult>().Subject;
-            var viewModel = partialViewResult.Model.Should().BeOfType<AvailabilitySearchViewModel>().Subject;
+            partialViewResult.Model.Should().BeOfType<AvailabilitySearchViewModel>();
         }
 
         private AvailabilitySearch GetMockSearchResults()

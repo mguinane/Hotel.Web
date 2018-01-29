@@ -62,7 +62,7 @@ namespace Hotel.Web.Tests.Controllers
         {
             // Arrange
             var mockRepository = new Mock<IHotelRepository>();
-            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => GetMockSearchResults());
+            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => GetMockAvailabilitySearch());
             var controller = new HotelsController(mockRepository.Object, _mockLogger.Object, _mockOptions.Object);
 
             // Act
@@ -94,7 +94,7 @@ namespace Hotel.Web.Tests.Controllers
         {
             // Arrange
             var mockRepository = new Mock<IHotelRepository>();
-            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => GetMockSearchResults());
+            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => GetMockAvailabilitySearch());
             var controller = new HotelsController(mockRepository.Object, _mockLogger.Object, _mockOptions.Object);
 
             // Act
@@ -105,10 +105,8 @@ namespace Hotel.Web.Tests.Controllers
             partialViewResult.Model.Should().BeOfType<AvailabilitySearchViewModel>();
         }
 
-        private AvailabilitySearch GetMockSearchResults()
+        private AvailabilitySearch GetMockAvailabilitySearch()
         {
-            // TODO https://www.davepaquette.com/archive/2015/11/15/realistic-sample-data-with-genfu.aspx
-
             return new AvailabilitySearch()
             {
                 Establishments = new List<Establishment>()

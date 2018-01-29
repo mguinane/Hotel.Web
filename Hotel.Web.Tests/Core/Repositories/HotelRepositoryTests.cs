@@ -3,7 +3,7 @@ using Hotel.Web.Core.Models;
 using Hotel.Web.Infrastructure.Repositories;
 using Xunit;
 
-namespace Hotel.Web.Tests.Repositories
+namespace Hotel.Web.Tests.Core.Repositories
 {
     public class HotelRepositoryTests
     {

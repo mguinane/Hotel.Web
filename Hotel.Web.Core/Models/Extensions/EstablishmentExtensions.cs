@@ -7,11 +7,22 @@ namespace Hotel.Web.Core.Models.Extensions
     {
         public static IEnumerable<Establishment> Filter(this IEnumerable<Establishment> source, SearchCriteria criteria)
         {
-            return source.Where(e =>
-                (string.IsNullOrWhiteSpace(criteria.Name) || e.Name.ToLower().Contains(criteria.Name.ToLower())) &&
-                ((criteria.Stars == null || criteria.Stars.Length == 0) || criteria.Stars.Contains(e.Stars)) &&
-                (criteria.MinUserRating == 0 || e.UserRating >= criteria.MinUserRating) && (criteria.MaxUserRating == 0 || e.UserRating <= criteria.MinUserRating) &&
-                (criteria.MinCost == 0 || e.MinCost >= criteria.MinCost));
+            if (!string.IsNullOrWhiteSpace(criteria.Name))
+                source = source.Where(e => e.Name.ToLower().Contains(criteria.Name.ToLower()));
+
+            if (criteria.Stars != null && criteria.Stars.Length > 0)
+                source = source.Where(e => criteria.Stars.Contains(e.Stars));
+
+            if (criteria.MinUserRating > 0)
+                source = source.Where(e => e.UserRating >= criteria.MinUserRating);
+
+            if (criteria.MaxUserRating > 0)
+                source = source.Where(e => e.UserRating <= criteria.MaxUserRating);
+
+            if (criteria.MinCost > 0)
+                source = source.Where(e => e.MinCost >= criteria.MinCost);
+
+            return source;
         }
 
         public static IEnumerable<Establishment> Sort(this IEnumerable<Establishment> source, SortType sortType)

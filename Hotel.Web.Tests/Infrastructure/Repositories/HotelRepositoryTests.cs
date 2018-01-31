@@ -3,7 +3,7 @@ using Hotel.Web.Core.Models;
 using Hotel.Web.Infrastructure.Repositories;
 using Xunit;
 
-namespace Hotel.Web.Tests.Core.Repositories
+namespace Hotel.Web.Tests.Infrastucture.Repositories
 {
     public class HotelRepositoryTests
     {
@@ -33,15 +33,15 @@ namespace Hotel.Web.Tests.Core.Repositories
         {
             // Arrange
             var searchCriteria = new SearchCriteria();
+            var pageSize = 5;
 
             // Act
-            var result = _repository.GetHotels(searchCriteria, 5);
+            var result = _repository.GetHotels(searchCriteria, pageSize);
 
             // Assert
             var availability = result.Should().BeOfType<AvailabilitySearch>().Subject;
             availability.Establishments.Should().NotBeEmpty();
             availability.Establishments.Should().BeInAscendingOrder(x => x.Distance);
-            availability.PageIndex.Should().Be(1);
         }
     }
 }

@@ -107,20 +107,16 @@ namespace Hotel.Web.Tests.Controllers
 
         private AvailabilitySearch GetMockAvailabilitySearch()
         {
-            return new AvailabilitySearch()
+            var establishments = new List<Establishment>()
             {
-                Establishments = new List<Establishment>()
-                {
-                    new Establishment() { Name = "Hotel 1", Stars = 1, Location = "Town 1" },
-                    new Establishment() { Name = "Hotel 2", Stars = 2, Location = "Town 2" },
-                    new Establishment() { Name = "Hotel 3", Stars = 3, Location = "Town 3" },
-                    new Establishment() { Name = "Hotel 4", Stars = 4, Location = "Town 4" },
-                    new Establishment() { Name = "Hotel 5", Stars = 5, Location = "Town 5" },
-                },
-                PageIndex = 1,
-                PageCount = 1,
-                TotalResults = 5
+                new Establishment() { Name = "Hotel 1", Stars = 1, Location = "Town 1" },
+                new Establishment() { Name = "Hotel 2", Stars = 2, Location = "Town 2" },
+                new Establishment() { Name = "Hotel 3", Stars = 3, Location = "Town 3" },
+                new Establishment() { Name = "Hotel 4", Stars = 4, Location = "Town 4" },
+                new Establishment() { Name = "Hotel 5", Stars = 5, Location = "Town 5" },
             };
+
+            return new AvailabilitySearch("1", establishments, 1, 1);
         }
     }
 }

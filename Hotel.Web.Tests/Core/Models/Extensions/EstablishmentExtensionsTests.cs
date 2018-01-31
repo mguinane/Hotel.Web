@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Hotel.Web.Core.Models;
 using Hotel.Web.Core.Models.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -84,8 +85,8 @@ namespace Hotel.Web.Tests.Core.Models.Extensions
             var result = establishments.Sort(SortType.MinCost).ToList();
 
             // Assert
-            var filteredResult = result.Should().BeOfType<List<Establishment>>().Subject;
-            filteredResult.Should().BeInAscendingOrder(e => e.MinCost);
+            var sortedResult = result.Should().BeOfType<List<Establishment>>().Subject;
+            sortedResult.Should().BeInAscendingOrder(e => e.MinCost);
         }
 
         [Fact]
@@ -98,8 +99,8 @@ namespace Hotel.Web.Tests.Core.Models.Extensions
             var result = establishments.Sort(SortType.UserRating).ToList();
 
             // Assert
-            var filteredResult = result.Should().BeOfType<List<Establishment>>().Subject;
-            filteredResult.Should().BeInDescendingOrder(e => e.UserRating);
+            var sortedResult = result.Should().BeOfType<List<Establishment>>().Subject;
+            sortedResult.Should().BeInDescendingOrder(e => e.UserRating);
         }
 
         [Fact]
@@ -112,12 +113,12 @@ namespace Hotel.Web.Tests.Core.Models.Extensions
             var result = establishments.Sort(SortType.Distance).ToList();
 
             // Assert
-            var filteredResult = result.Should().BeOfType<List<Establishment>>().Subject;
-            filteredResult.Should().BeInAscendingOrder(e => e.Distance);
+            var sortedResult = result.Should().BeOfType<List<Establishment>>().Subject;
+            sortedResult.Should().BeInAscendingOrder(e => e.Distance);
         }
 
         [Fact]
-        public void Sort_SortEstablishmentsByStarts_ReturnEstablishmentsSortedByStars()
+        public void Sort_SortEstablishmentsByStars_ReturnEstablishmentsSortedByStars()
         {
             // Arrange
             var establishments = GetMockEstablishments();
@@ -126,11 +127,45 @@ namespace Hotel.Web.Tests.Core.Models.Extensions
             var result = establishments.Sort(SortType.Stars).ToList();
 
             // Assert
-            var filteredResult = result.Should().BeOfType<List<Establishment>>().Subject;
-            filteredResult.Should().BeInDescendingOrder(e => e.Stars);
+            var sortedResult = result.Should().BeOfType<List<Establishment>>().Subject;
+            sortedResult.Should().BeInDescendingOrder(e => e.Stars);
         }
 
-        private IEnumerable<Establishment> GetMockEstablishments()
+        [Fact]
+        public void Page_PageEstablishments_ReturnEstablishmentsPagedByPageIndexAndSize()
+        {
+            // Arrange
+            var establishments = GetMockEstablishments();
+            var pageIndex = 2;
+            var pageSize = 5;
+            var skipByIndex = (pageIndex - 1) * pageSize;
+            var firstEstablishmentNameOnPage = establishments[skipByIndex].Name;
+
+            // Act
+            var result = establishments.Page(pageIndex, pageSize).ToList();
+
+            // Assert
+            var pagedResult = result.Should().BeOfType<List<Establishment>>().Subject;
+            pagedResult.Should().HaveCount(pageSize);
+            pagedResult.First().Name.Should().Be(firstEstablishmentNameOnPage);
+        }
+
+        [Fact]
+        public void PageCount_GetEstablishmentsPageCount_ReturnEstablishmentsPageCount()
+        {
+            // Arrange
+            var establishments = GetMockEstablishments();
+            var pageSize = 5;
+            var expectedPageCount = (int)Math.Ceiling(establishments.Count() / (double)pageSize);
+
+            // Act
+            var result = establishments.PageCount(pageSize);
+
+            // Assert
+            result.Should().Be(expectedPageCount);
+        }
+
+        private List<Establishment> GetMockEstablishments()
         {
             return new List<Establishment>()
             {
@@ -138,7 +173,12 @@ namespace Hotel.Web.Tests.Core.Models.Extensions
                 new Establishment() { Name = "Hotel London", Stars = 2, Location = "London", UserRating = 9, MinCost = 150 },
                 new Establishment() { Name = "Hotel Rome", Stars = 4, Location = "Rome", UserRating = 8, MinCost = 100 },
                 new Establishment() { Name = "Hotel Madrid", Stars = 3, Location = "Madrid", UserRating = 7, MinCost = 125 },
-                new Establishment() { Name = "Hotel Athens", Stars = 1, Location = "Athens", UserRating = 9, MinCost = 200 }
+                new Establishment() { Name = "Hotel Athens", Stars = 1, Location = "Athens", UserRating = 9, MinCost = 200 },
+                new Establishment() { Name = "Hotel Barcelona", Stars = 5, Location = "Barcelona", UserRating = 10, MinCost = 250 },
+                new Establishment() { Name = "Hotel Geneva", Stars = 2, Location = "Geneva", UserRating = 9, MinCost = 150 },
+                new Establishment() { Name = "Hotel Brussels", Stars = 4, Location = "Brussels", UserRating = 8, MinCost = 100 },
+                new Establishment() { Name = "Hotel Amsterdam", Stars = 3, Location = "Copenhagen", UserRating = 7, MinCost = 125 },
+                new Establishment() { Name = "Hotel Florence", Stars = 1, Location = "Florence", UserRating = 9, MinCost = 200 }
             };
         }
     }

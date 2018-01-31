@@ -6,11 +6,23 @@ namespace Hotel.Web.Core.Models
 
     public class AvailabilitySearch
     {
-        public string AvailabilitySearchId { get; set; }
-        public IEnumerable<Establishment> Establishments { get; set; }
+        public string AvailabilitySearchId { get; private set; }
+        public IEnumerable<Establishment> Establishments { get; private set; }
 
-        public int PageIndex { get; set; }
-        public int PageCount { get; set; }
-        public int TotalResults { get; set; }
+        public int PageIndex { get; private set; }
+        public int PageCount { get; private set; }
+
+        public AvailabilitySearch()
+        {
+            Establishments = new List<Establishment>();
+        }
+
+        public AvailabilitySearch(string availabilitySearchId, IEnumerable<Establishment> establishments, int pageIndex, int pageCount)
+        {
+            AvailabilitySearchId = availabilitySearchId;
+            Establishments = establishments;
+            PageIndex = pageIndex;
+            PageCount = pageCount;
+        }
     }
 }

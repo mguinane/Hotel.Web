@@ -2,10 +2,7 @@
 using Hotel.Web.Core.Models.Extensions;
 using Hotel.Web.Core.Repositories;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -32,24 +29,14 @@ namespace Hotel.Web.Infrastructure.Repositories
 
         public AvailabilitySearch GetHotels(SearchCriteria criteria, int pageSize)
         {
-            var totalResults = _searchResults.Establishments.Count();
-
             // Filter & Sort results
             var establishments = _searchResults.Establishments.Filter(criteria).Sort(criteria.SortType);
 
             // Page results
-            var establishmentList = establishments as IList<Establishment> ?? establishments.ToList();
+            var pageCount = establishments.PageCount(pageSize);
+            establishments = establishments.Page(criteria.PageIndex, pageSize);
 
-            var availability = new AvailabilitySearch()
-            {
-                AvailabilitySearchId = _searchResults.AvailabilitySearchId,
-                Establishments = establishmentList.Skip((criteria.PageIndex - 1) * pageSize).Take(pageSize),
-                PageIndex = criteria.PageIndex,
-                PageCount = (int)Math.Ceiling(establishmentList.Count() / (double)pageSize),
-                TotalResults = totalResults
-            };
-
-            return availability;
+            return new AvailabilitySearch(_searchResults.AvailabilitySearchId, establishments, criteria.PageIndex, pageCount);
         }
     }   
 }

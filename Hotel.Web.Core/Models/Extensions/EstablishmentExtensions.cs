@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Hotel.Web.Core.Models.Extensions
@@ -38,6 +39,16 @@ namespace Hotel.Web.Core.Models.Extensions
                 default:
                     return source.OrderBy(e => e.Distance);
             }
+        }
+
+        public static IEnumerable<Establishment> Page(this IEnumerable<Establishment> source, int pageIndex, int pageSize)
+        {
+            return source.Skip((pageIndex - 1) * pageSize).Take(pageSize);
+        }
+
+        public static int PageCount(this IEnumerable<Establishment> source, int pageSize)
+        {
+            return (int)Math.Ceiling(source.Count() / (double)pageSize);
         }
     }
 }

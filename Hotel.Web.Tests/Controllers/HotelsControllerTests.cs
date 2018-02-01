@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using System;
 using System.Collections.Generic;
 using Xunit;
 
@@ -103,6 +104,55 @@ namespace Hotel.Web.Tests.Controllers
             // Assert
             var partialViewResult = result.Should().BeOfType<PartialViewResult>().Subject;
             partialViewResult.Model.Should().BeOfType<AvailabilitySearchViewModel>();
+        }
+
+        [Fact]
+        public void Index_RepositoryThrowsException_ReturnRedirectToErrorActionResult()
+        {
+            // Arrange
+            var mockRepository = new Mock<IHotelRepository>();
+            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Throws<Exception>();
+            var controller = new HotelsController(mockRepository.Object, _mockLogger.Object, _mockOptions.Object);
+
+            // Act
+            var result = controller.Index();
+
+            // Assert
+            var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+            redirectToActionResult.ActionName.Should().Be("Error");
+        }
+
+        [Fact]
+        public void Results_RepositoryThrowsException_ReturnPartialViewResultAndNullViewModel()
+        {
+            // Arrange
+            var mockRepository = new Mock<IHotelRepository>();
+            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Throws<Exception>();
+            var controller = new HotelsController(mockRepository.Object, _mockLogger.Object, _mockOptions.Object);
+
+            // Act
+            var result = controller.Results(new SearchCriteriaViewModel());
+
+            // Assert
+            var partialViewResult = result.Should().BeOfType<PartialViewResult>().Subject;
+            partialViewResult.Model.Should().BeNull();
+        }
+
+        [Fact]
+        public void Results_ModelStateInvalid_ReturnPartialViewResultAndNullViewModel()
+        {
+            // Arrange
+            var mockRepository = new Mock<IHotelRepository>();
+            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => GetMockAvailabilitySearch());
+            var controller = new HotelsController(mockRepository.Object, _mockLogger.Object, _mockOptions.Object);
+            controller.ModelState.AddModelError("Name", "name property is too long");
+
+            // Act
+            var result = controller.Results(new SearchCriteriaViewModel());
+
+            // Assert
+            var partialViewResult = result.Should().BeOfType<PartialViewResult>().Subject;
+            partialViewResult.Model.Should().BeNull();
         }
 
         private AvailabilitySearch GetMockAvailabilitySearch()

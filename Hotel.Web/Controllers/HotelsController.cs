@@ -43,13 +43,21 @@ namespace Hotel.Web.Controllers
         [HttpPost]
         public IActionResult Results([FromBody]SearchCriteriaViewModel criteria)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var availability = _repository.GetHotels(Mapper.Map<SearchCriteria>(criteria), _pageSettings.PageSize);
+                if (ModelState.IsValid)
+                {
+                    var availability = _repository.GetHotels(Mapper.Map<SearchCriteria>(criteria), _pageSettings.PageSize);
 
-                var results = Mapper.Map<AvailabilitySearchViewModel>(availability);
+                    var results = Mapper.Map<AvailabilitySearchViewModel>(availability);
 
-                return PartialView("HotelResults", results);
+                    return PartialView("HotelResults", results);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to get Hotel search results: {ex}");
             }
 
             return PartialView("HotelResults", null);

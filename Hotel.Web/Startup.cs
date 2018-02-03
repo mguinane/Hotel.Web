@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Hotel.Web.Controllers;
 using Hotel.Web.Core.Models;
 using Hotel.Web.Core.Repositories;
 using Hotel.Web.Infrastructure.Repositories;
+using Hotel.Web.Infrastructure.Services.Logging;
 using Hotel.Web.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,6 +31,8 @@ namespace Hotel.Web
             // Typically would be AddScoped for a database repository (if using EF via DbContext which also has Scoped lifetime)
             // Using AddSingleton for our in memory repository so that hotels.json file is not deserialised on each request.
             services.AddSingleton<IHotelRepository, HotelRepository>();
+
+            services.AddSingleton<ILoggerAdapter<HotelsController>, LoggerAdapter<HotelsController>>();
 
             Mapper.Initialize(mapConfig =>
             {

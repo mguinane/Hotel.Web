@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Hotel.Web.Core.Models;
 using Hotel.Web.Core.Repositories;
+using Hotel.Web.Infrastructure.Services.Logging;
 using Hotel.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 
@@ -12,10 +12,10 @@ namespace Hotel.Web.Controllers
     public class HotelsController : Controller
     {
         private readonly IHotelRepository _repository;
-        private readonly ILogger<HotelsController> _logger;
+        private readonly ILoggerAdapter<HotelsController> _logger;
         private readonly PageSettings _pageSettings;
 
-        public HotelsController(IHotelRepository repository, ILogger<HotelsController> logger, IOptions<PageSettings> pageSettings)
+        public HotelsController(IHotelRepository repository, ILoggerAdapter<HotelsController> logger, IOptions<PageSettings> pageSettings)
         {
             _repository = repository;
             _logger = logger;

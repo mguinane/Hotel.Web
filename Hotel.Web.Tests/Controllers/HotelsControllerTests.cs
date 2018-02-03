@@ -3,9 +3,9 @@ using FluentAssertions;
 using Hotel.Web.Controllers;
 using Hotel.Web.Core.Models;
 using Hotel.Web.Core.Repositories;
+using Hotel.Web.Infrastructure.Services.Logging;
 using Hotel.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using System;
@@ -18,7 +18,7 @@ namespace Hotel.Web.Tests.Controllers
     {
         private HotelsController _controller;
         private Mock<IHotelRepository> _mockRepository;
-        private Mock<ILogger<HotelsController>> _mockLogger;
+        private Mock<ILoggerAdapter<HotelsController>> _mockLogger;
         private Mock<IOptions<PageSettings>> _mockOptions;
         private PageSettings _pageSettings;
 
@@ -26,7 +26,7 @@ namespace Hotel.Web.Tests.Controllers
         {
             _mockRepository = new Mock<IHotelRepository>();
 
-            _mockLogger = new Mock<ILogger<HotelsController>>();
+            _mockLogger = new Mock<ILoggerAdapter<HotelsController>>();
 
             _mockOptions = new Mock<IOptions<PageSettings>>();
             _pageSettings = new PageSettings() { PageSize = 5 };
@@ -153,6 +153,36 @@ namespace Hotel.Web.Tests.Controllers
             // Assert
             var partialViewResult = result.Should().BeOfType<PartialViewResult>().Subject;
             partialViewResult.Model.Should().BeNull();
+        }
+
+        [Fact]
+        public void Index_ExceptionThrown_ErrorLogged()
+        {
+            // Arrange
+            var mockRepository = new Mock<IHotelRepository>();
+            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Throws<Exception>();
+            var controller = new HotelsController(mockRepository.Object, _mockLogger.Object, _mockOptions.Object);
+
+            // Act
+            var result = controller.Index();
+
+            // Assert
+            _mockLogger.Verify(l => l.LogError(It.IsAny<string>()));
+        }
+
+        [Fact]
+        public void Results_ExceptionThrown_ErrorLogged()
+        {
+            // Arrange
+            var mockRepository = new Mock<IHotelRepository>();
+            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Throws<Exception>();
+            var controller = new HotelsController(mockRepository.Object, _mockLogger.Object, _mockOptions.Object);
+
+            // Act
+            var result = controller.Results(new SearchCriteriaViewModel());
+
+            // Assert
+            _mockLogger.Verify(l => l.LogError(It.IsAny<string>()));
         }
 
         private AvailabilitySearch GetMockAvailabilitySearch()

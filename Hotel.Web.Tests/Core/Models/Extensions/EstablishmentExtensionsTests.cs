@@ -10,162 +10,192 @@ namespace Hotel.Web.Tests.Core.Models.Extensions
 {
     public class EstablishmentExtensionsTests
     {
+        private List<Establishment> _establishments;
+        private SearchCriteria _searchCriteria;
+        const SortType DefaultSearchType = SortType.Distance;
+        const int DefaultPageSize = 5;
+
+        public EstablishmentExtensionsTests()
+        {
+            _establishments = GetFakeAvailabilitySearch();
+            _searchCriteria = new SearchCriteria();
+        }
+
+        [Fact]
+        public void Filter_FilterEstablishmentsByAnySearchCriteria_ReturnEstablishments()
+        {
+            // Arrange
+            // Act
+            var result = _establishments.Filter(_searchCriteria).ToList();
+
+            // Assert
+            result.Should().BeOfType<List<Establishment>>();
+        }
+
         [Fact]
         public void Filter_FilterEstablishmentsByName_ReturnEstablishmentsMatchingName()
         {
             // Arrange
-            var establishments = GetMockEstablishments();
             var name = "London";
-            var searchCriteria = new SearchCriteria() { Name = name };
+            _searchCriteria.Name = name;
 
             // Act
-            var result = establishments.Filter(searchCriteria).ToList();
+            var result = _establishments.Filter(_searchCriteria).ToList();
 
             // Assert
-            var filteredResult = result.Should().BeOfType<List<Establishment>>().Subject;
-            filteredResult.Should().OnlyContain(e => e.Name.Contains(name));
+            result.Should().OnlyContain(e => e.Name.Contains(name));
         }
 
         [Fact]
         public void Filter_FilterEstablishmentsByStars_ReturnEstablishmentsMatchingStars()
         {
             // Arrange
-            var establishments = GetMockEstablishments();
             var stars = new int[] { 4, 5 };
-            var searchCriteria = new SearchCriteria() { Stars = stars };
+            _searchCriteria.Stars = stars;
 
             // Act
-            var result = establishments.Filter(searchCriteria).ToList();
+            var result = _establishments.Filter(_searchCriteria).ToList();
 
             // Assert
-            var filteredResult = result.Should().BeOfType<List<Establishment>>().Subject;
-            filteredResult.Should().OnlyContain(e => stars.Contains(e.Stars));
+            result.Should().OnlyContain(e => stars.Contains(e.Stars));
         }
 
         [Fact]
         public void Filter_FilterEstablishmentsByUserRating_ReturnEstablishmentsMatchingUserRating()
         {
             // Arrange
-            var establishments = GetMockEstablishments();
             var minUserRating = 7;
             var maxUserRating = 9;
-            var searchCriteria = new SearchCriteria() { MinUserRating = minUserRating, MaxUserRating = maxUserRating };
+            _searchCriteria.MinUserRating = minUserRating;
+            _searchCriteria.MaxUserRating = maxUserRating;
 
             // Act
-            var result = establishments.Filter(searchCriteria).ToList();
+            var result = _establishments.Filter(_searchCriteria).ToList();
 
             // Assert
-            var filteredResult = result.Should().BeOfType<List<Establishment>>().Subject;
-            filteredResult.Should().OnlyContain(e => e.UserRating >= minUserRating && e.UserRating <= maxUserRating);
+            result.Should().OnlyContain(e => e.UserRating >= minUserRating && e.UserRating <= maxUserRating);
         }
 
         [Fact]
         public void Filter_FilterEstablishmentsByMinCost_ReturnEstablishmentsMatchingMinCost()
         {
             // Arrange
-            var establishments = GetMockEstablishments();
             var minCost = 150;
-            var searchCriteria = new SearchCriteria() { MinCost = minCost };
+            _searchCriteria.MinCost = minCost;
 
             // Act
-            var result = establishments.Filter(searchCriteria).ToList();
+            var result = _establishments.Filter(_searchCriteria).ToList();
 
             // Assert
-            var filteredResult = result.Should().BeOfType<List<Establishment>>().Subject;
-            filteredResult.Should().OnlyContain(e => e.MinCost >= minCost);
+            result.Should().OnlyContain(e => e.MinCost >= minCost);
+        }
+
+        [Fact]
+        public void Sort_SortEstablishmentsByAnySortType_ReturnEstablishments()
+        {
+            // Arrange
+            // Act
+            var result = _establishments.Sort(DefaultSearchType).ToList();
+
+            // Assert
+            result.Should().BeOfType<List<Establishment>>();
         }
 
         [Fact]
         public void Sort_SortEstablishmentsByMinCost_ReturnEstablishmentsSortedByMinCost()
         {
             // Arrange
-            var establishments = GetMockEstablishments();
-
             // Act
-            var result = establishments.Sort(SortType.MinCost).ToList();
+            var result = _establishments.Sort(SortType.MinCost).ToList();
 
             // Assert
-            var sortedResult = result.Should().BeOfType<List<Establishment>>().Subject;
-            sortedResult.Should().BeInAscendingOrder(e => e.MinCost);
+            result.Should().BeInAscendingOrder(e => e.MinCost);
         }
 
         [Fact]
         public void Sort_SortEstablishmentsByUserRating_ReturnEstablishmentsSortedByUserRating()
         {
             // Arrange
-            var establishments = GetMockEstablishments();
-
             // Act
-            var result = establishments.Sort(SortType.UserRating).ToList();
+            var result = _establishments.Sort(SortType.UserRating).ToList();
 
             // Assert
-            var sortedResult = result.Should().BeOfType<List<Establishment>>().Subject;
-            sortedResult.Should().BeInDescendingOrder(e => e.UserRating);
+            result.Should().BeInDescendingOrder(e => e.UserRating);
         }
 
         [Fact]
         public void Sort_SortEstablishmentsByDistance_ReturnEstablishmentsSortedByDistance()
         {
             // Arrange
-            var establishments = GetMockEstablishments();
-
             // Act
-            var result = establishments.Sort(SortType.Distance).ToList();
+            var result = _establishments.Sort(SortType.Distance).ToList();
 
             // Assert
-            var sortedResult = result.Should().BeOfType<List<Establishment>>().Subject;
-            sortedResult.Should().BeInAscendingOrder(e => e.Distance);
+            result.Should().BeInAscendingOrder(e => e.Distance);
         }
 
         [Fact]
         public void Sort_SortEstablishmentsByStars_ReturnEstablishmentsSortedByStars()
         {
             // Arrange
-            var establishments = GetMockEstablishments();
-
             // Act
-            var result = establishments.Sort(SortType.Stars).ToList();
+            var result = _establishments.Sort(SortType.Stars).ToList();
 
             // Assert
-            var sortedResult = result.Should().BeOfType<List<Establishment>>().Subject;
-            sortedResult.Should().BeInDescendingOrder(e => e.Stars);
+            result.Should().BeInDescendingOrder(e => e.Stars);
         }
 
         [Fact]
-        public void Page_PageEstablishments_ReturnEstablishmentsPagedByPageIndexAndSize()
+        public void Page_PageEstablishments_ReturnEstablishments()
         {
             // Arrange
-            var establishments = GetMockEstablishments();
-            var pageIndex = 2;
-            var pageSize = 5;
-            var skipByIndex = (pageIndex - 1) * pageSize;
-            var firstEstablishmentNameOnPage = establishments[skipByIndex].Name;
-
             // Act
-            var result = establishments.Page(pageIndex, pageSize).ToList();
+            var result = _establishments.Page(1, DefaultPageSize).ToList();
 
             // Assert
-            var pagedResult = result.Should().BeOfType<List<Establishment>>().Subject;
-            pagedResult.Should().HaveCount(pageSize);
-            pagedResult.First().Name.Should().Be(firstEstablishmentNameOnPage);
+            result.Should().BeOfType<List<Establishment>>();
+        }
+
+        [Fact]
+        public void Page_PageEstablishments_ReturnEstablishmentsPagedByPageSize()
+        {
+            // Arrange
+            // Act
+            var result = _establishments.Page(1, DefaultPageSize).ToList();
+
+            // Assert
+            result.Should().HaveCount(DefaultPageSize);
+        }
+
+        [Fact]
+        public void Page_PageEstablishments_ReturnEstablishmentsPagedByPageIndex()
+        {
+            // Arrange
+            var pageIndex = 2;
+            var skipByIndex = (pageIndex - 1) * DefaultPageSize;
+            var firstEstablishmentNameOnPage = _establishments[skipByIndex].Name;
+
+            // Act
+            var result = _establishments.Page(pageIndex, DefaultPageSize).ToList();
+
+            // Assert
+            result.First().Name.Should().Be(firstEstablishmentNameOnPage);
         }
 
         [Fact]
         public void PageCount_GetEstablishmentsPageCount_ReturnEstablishmentsPageCount()
         {
             // Arrange
-            var establishments = GetMockEstablishments();
-            var pageSize = 5;
-            var expectedPageCount = (int)Math.Ceiling(establishments.Count() / (double)pageSize);
+            var expectedPageCount = (int)Math.Ceiling(_establishments.Count() / (double)DefaultPageSize);
 
             // Act
-            var result = establishments.PageCount(pageSize);
+            var result = _establishments.PageCount(DefaultPageSize);
 
             // Assert
             result.Should().Be(expectedPageCount);
         }
 
-        private List<Establishment> GetMockEstablishments()
+        private List<Establishment> GetFakeAvailabilitySearch()
         {
             return new List<Establishment>()
             {

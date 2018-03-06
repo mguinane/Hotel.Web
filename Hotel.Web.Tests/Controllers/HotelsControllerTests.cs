@@ -16,23 +16,20 @@ namespace Hotel.Web.Tests.Controllers
 {
     public class HotelsControllerTests
     {
-        private HotelsController _controller;
-        private Mock<IHotelRepository> _mockRepository;
+        private HotelsController _hotelsController;
+        private Mock<IHotelRepository> _mockHotelRepository;
         private Mock<ILoggerAdapter<HotelsController>> _mockLogger;
         private Mock<IOptions<PageSettings>> _mockOptions;
         private PageSettings _pageSettings;
 
         public HotelsControllerTests()
         {
-            _mockRepository = new Mock<IHotelRepository>();
-
+            _mockHotelRepository = new Mock<IHotelRepository>();
             _mockLogger = new Mock<ILoggerAdapter<HotelsController>>();
-
             _mockOptions = new Mock<IOptions<PageSettings>>();
             _pageSettings = new PageSettings() { PageSize = 5 };
             _mockOptions.Setup(p => p.Value).Returns(_pageSettings);
-
-            _controller = new HotelsController(_mockRepository.Object, _mockLogger.Object, _mockOptions.Object);
+            _hotelsController = new HotelsController(_mockHotelRepository.Object, _mockLogger.Object, _mockOptions.Object);
 
             Mapper.Initialize(mapConfig =>
             {
@@ -43,128 +40,171 @@ namespace Hotel.Web.Tests.Controllers
         }
 
         [Fact]
-        public void Index_AnySearchCriteriaAndEmptyRepository_ReturnValidViewResultAndViewModel()
+        public void Index_AnySearchCriteria_ReturnViewResult()
         {
             // Arrange
-            var mockRepository = new Mock<IHotelRepository>();
-            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => new AvailabilitySearch());
-            var controller = new HotelsController(mockRepository.Object, _mockLogger.Object, _mockOptions.Object);
+            _mockHotelRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => new AvailabilitySearch());
 
             // Act
-            var result = controller.Index();
+            var result = _hotelsController.Index();
 
             // Assert
             var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-            viewResult.Model.Should().BeOfType<AvailabilitySearchViewModel>();
         }
 
         [Fact]
-        public void Index_AnySearchCriteriaAndNonEmptyRepository_ReturnValidViewResultAndViewModel()
+        public void Index_AnySearchCriteriaAndEmptyRepository_ReturnAvailabilitySearchViewModel()
         {
             // Arrange
-            var mockRepository = new Mock<IHotelRepository>();
-            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => GetMockAvailabilitySearch());
-            var controller = new HotelsController(mockRepository.Object, _mockLogger.Object, _mockOptions.Object);
+            _mockHotelRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => new AvailabilitySearch());
 
             // Act
-            var result = controller.Index();
+            var result = _hotelsController.Index() as ViewResult;
 
             // Assert
-            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-            viewResult.Model.Should().BeOfType<AvailabilitySearchViewModel>();
+            result.Model.Should().BeOfType<AvailabilitySearchViewModel>();
         }
 
         [Fact]
-        public void Results_AnySearchCriteriaAndEmptyRepository_ReturnValidPartialViewResultAndViewModel()
+        public void Index_AnySearchCriteriaAndNonEmptyRepository_ReturnAvailabilitySearchViewModel()
         {
             // Arrange
-            var mockRepository = new Mock<IHotelRepository>();
-            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => new AvailabilitySearch());
-            var controller = new HotelsController(mockRepository.Object, _mockLogger.Object, _mockOptions.Object);
+            _mockHotelRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => GetFakeAvailabilitySearch());
 
             // Act
-            var result = controller.Results(new SearchCriteriaViewModel());
+            var result = _hotelsController.Index() as ViewResult;
 
             // Assert
-            var partialViewResult = result.Should().BeOfType<PartialViewResult>().Subject;
-            partialViewResult.Model.Should().BeOfType<AvailabilitySearchViewModel>();
+            result.Model.Should().BeOfType<AvailabilitySearchViewModel>();
         }
 
         [Fact]
-        public void Results_AnySearchCriteriaAndNonEmptyRepository_ReturnValidPartialViewResultAndViewModel()
+        public void Results_AnySearchCriteria_ReturnPartialViewResult()
         {
             // Arrange
-            var mockRepository = new Mock<IHotelRepository>();
-            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => GetMockAvailabilitySearch());
-            var controller = new HotelsController(mockRepository.Object, _mockLogger.Object, _mockOptions.Object);
+            _mockHotelRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => new AvailabilitySearch());
 
             // Act
-            var result = controller.Results(new SearchCriteriaViewModel());
+            var result = _hotelsController.Results(new SearchCriteriaViewModel());
 
             // Assert
-            var partialViewResult = result.Should().BeOfType<PartialViewResult>().Subject;
-            partialViewResult.Model.Should().BeOfType<AvailabilitySearchViewModel>();
+            var viewResult = result.Should().BeOfType<PartialViewResult>().Subject;
+        }
+
+        [Fact]
+        public void Results_AnySearchCriteriaAndEmptyRepository_ReturnAvailabilitySearchViewModel()
+        {
+            // Arrange
+            _mockHotelRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => new AvailabilitySearch());
+
+            // Act
+            var result = _hotelsController.Results(new SearchCriteriaViewModel()) as PartialViewResult;
+
+            // Assert
+            result.Model.Should().BeOfType<AvailabilitySearchViewModel>();
+        }
+
+        [Fact]
+        public void Results_AnySearchCriteriaAndNonEmptyRepository_ReturnAvailabilitySearchViewModel()
+        {
+            // Arrange
+            _mockHotelRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => GetFakeAvailabilitySearch());
+
+            // Act
+            var result = _hotelsController.Results(new SearchCriteriaViewModel()) as PartialViewResult;
+
+            // Assert
+            result.Model.Should().BeOfType<AvailabilitySearchViewModel>();
         }
 
         [Fact]
         public void Index_RepositoryThrowsException_ReturnRedirectToErrorActionResult()
         {
             // Arrange
-            var mockRepository = new Mock<IHotelRepository>();
-            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Throws<Exception>();
-            var controller = new HotelsController(mockRepository.Object, _mockLogger.Object, _mockOptions.Object);
+            _mockHotelRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Throws<Exception>();
 
             // Act
-            var result = controller.Index();
+            var result = _hotelsController.Index();
 
             // Assert
             var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-            redirectToActionResult.ActionName.Should().Be("Error");
         }
 
         [Fact]
-        public void Results_RepositoryThrowsException_ReturnPartialViewResultAndNullViewModel()
+        public void Index_RepositoryThrowsException_ReturnActionNameAsError()
         {
             // Arrange
-            var mockRepository = new Mock<IHotelRepository>();
-            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Throws<Exception>();
-            var controller = new HotelsController(mockRepository.Object, _mockLogger.Object, _mockOptions.Object);
+            _mockHotelRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Throws<Exception>();
 
             // Act
-            var result = controller.Results(new SearchCriteriaViewModel());
+            var result = _hotelsController.Index() as RedirectToActionResult;
 
             // Assert
-            var partialViewResult = result.Should().BeOfType<PartialViewResult>().Subject;
-            partialViewResult.Model.Should().BeNull();
+            result.ActionName.Should().Be("Error");
         }
 
         [Fact]
-        public void Results_ModelStateInvalid_ReturnPartialViewResultAndNullViewModel()
+        public void Results_RepositoryThrowsException_ReturnPartialViewResult()
         {
             // Arrange
-            var mockRepository = new Mock<IHotelRepository>();
-            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => GetMockAvailabilitySearch());
-            var controller = new HotelsController(mockRepository.Object, _mockLogger.Object, _mockOptions.Object);
-            controller.ModelState.AddModelError("Name", "name property is too long");
+            _mockHotelRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Throws<Exception>();
 
             // Act
-            var result = controller.Results(new SearchCriteriaViewModel());
+            var result = _hotelsController.Results(new SearchCriteriaViewModel());
 
             // Assert
             var partialViewResult = result.Should().BeOfType<PartialViewResult>().Subject;
-            partialViewResult.Model.Should().BeNull();
+        }
+
+        [Fact]
+        public void Results_RepositoryThrowsException_ReturnNullViewModel()
+        {
+            // Arrange
+            _mockHotelRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Throws<Exception>();
+
+            // Act
+            var result = _hotelsController.Results(new SearchCriteriaViewModel()) as PartialViewResult;
+
+            // Assert
+            result.Model.Should().BeNull();
+        }
+
+        [Fact]
+        public void Results_ModelStateInvalid_ReturnPartialViewResult()
+        {
+            // Arrange
+            _mockHotelRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => GetFakeAvailabilitySearch());
+            _hotelsController.ModelState.AddModelError("Name", "name property is too long");
+
+            // Act
+            var result = _hotelsController.Results(new SearchCriteriaViewModel());
+
+            // Assert
+            var partialViewResult = result.Should().BeOfType<PartialViewResult>().Subject;
+        }
+
+        [Fact]
+        public void Results_ModelStateInvalid_ReturnNullViewModel()
+        {
+            // Arrange
+            _mockHotelRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Returns(() => GetFakeAvailabilitySearch());
+            _hotelsController.ModelState.AddModelError("Name", "name property is too long");
+
+            // Act
+            var result = _hotelsController.Results(new SearchCriteriaViewModel()) as PartialViewResult;
+
+            // Assert
+            result.Model.Should().BeNull();
         }
 
         [Fact]
         public void Index_ExceptionThrown_ErrorLogged()
         {
             // Arrange
-            var mockRepository = new Mock<IHotelRepository>();
-            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Throws<Exception>();
-            var controller = new HotelsController(mockRepository.Object, _mockLogger.Object, _mockOptions.Object);
+            _mockHotelRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Throws<Exception>();
 
             // Act
-            var result = controller.Index();
+            var result = _hotelsController.Index();
 
             // Assert
             _mockLogger.Verify(l => l.LogError(It.IsAny<string>()));
@@ -174,18 +214,16 @@ namespace Hotel.Web.Tests.Controllers
         public void Results_ExceptionThrown_ErrorLogged()
         {
             // Arrange
-            var mockRepository = new Mock<IHotelRepository>();
-            mockRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Throws<Exception>();
-            var controller = new HotelsController(mockRepository.Object, _mockLogger.Object, _mockOptions.Object);
+            _mockHotelRepository.Setup(r => r.GetHotels(It.IsAny<SearchCriteria>(), It.IsAny<int>())).Throws<Exception>();
 
             // Act
-            var result = controller.Results(new SearchCriteriaViewModel());
+            var result = _hotelsController.Results(new SearchCriteriaViewModel());
 
             // Assert
             _mockLogger.Verify(l => l.LogError(It.IsAny<string>()));
         }
 
-        private AvailabilitySearch GetMockAvailabilitySearch()
+        private AvailabilitySearch GetFakeAvailabilitySearch()
         {
             var establishments = new List<Establishment>()
             {

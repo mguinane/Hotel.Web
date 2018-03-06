@@ -7,7 +7,7 @@ namespace Hotel.Web.Tests.Core.Models
     public class SearchCriteriaTests
     {
         [Fact]
-        public void Constructor_CreateNewSearchCriteria_ReturnSearchCriteriaWithDefaultPropertyValues()
+        public void Constructor_CreateNewSearchCriteria_ReturnSearchCriteria()
         {
             // Arrange
             // Act
@@ -15,8 +15,32 @@ namespace Hotel.Web.Tests.Core.Models
 
             // Assert
             var searchCriteria = result.Should().BeOfType<SearchCriteria>().Subject;
-            searchCriteria.PageIndex.Should().Be(1);
-            searchCriteria.SortType.Should().Be(SortType.Distance);
+        }
+
+        [Fact]
+        public void Constructor_CreateNewSearchCriteria_ReturnSearchCriteriaWithDefaultPageIndexValue()
+        {
+            // Arrange
+            var defaultPageIndex = 1;
+
+            // Act
+            var result = new SearchCriteria();
+
+            // Assert
+            result.PageIndex.Should().Be(defaultPageIndex);
+        }
+
+        [Fact]
+        public void Constructor_CreateNewSearchCriteria_ReturnSearchCriteriaWithDefaultSortTypeValue()
+        {
+            // Arrange
+            var defaultSortType = SortType.Distance;
+
+            // Act
+            var result = new SearchCriteria();
+
+            // Assert
+            result.SortType.Should().Be(defaultSortType);
         }
     }
 }

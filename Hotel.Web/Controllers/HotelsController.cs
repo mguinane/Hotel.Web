@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Hotel.Web.Core.Models;
 using Hotel.Web.Core.Repositories;
-using Hotel.Web.Infrastructure.Services.Logging;
+using Hotel.Web.Core.Services.Logging;
 using Hotel.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;

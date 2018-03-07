@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Hotel.Web.Core.Services.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Hotel.Web.Infrastructure.Services.Logging
 {

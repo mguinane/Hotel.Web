@@ -1,4 +1,4 @@
-﻿namespace Hotel.Web.Infrastructure.Services.Logging
+﻿namespace Hotel.Web.Core.Services.Logging
 {
     public interface ILoggerAdapter<T>
     {

@@ -27,7 +27,7 @@ namespace Hotel.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<PageSettings>(Configuration.GetSection("pageSettings"));
+            services.Configure<PageSettings>(Configuration.GetSection(nameof(PageSettings)));
 
             // Typically would be AddScoped for a database repository (if using EF via DbContext which also has Scoped lifetime)
             // Using AddSingleton for our in memory repository so that hotels.json file is not deserialised on each request.
